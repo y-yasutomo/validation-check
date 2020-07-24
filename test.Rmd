@@ -151,11 +151,16 @@ Data
 
 ## Reading data
 ```{r} 
- Df<-read_csv("sample_data.csv",locale = default_locale())
- Df<-Df[,-1]
+ Df<-read_csv("sample_data.csv")
  args(read_csv)
  summary(Df)
  Df %>% count()
+```
+
+```{r}
+
+head(Df,n=5)
+
 ```
 
 
