@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1595250757848.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1439977517",
+    "id" : "C4ECCF53",
+    "lastKnownWriteTime" : 1595581676,
+    "last_content_update" : 1595581676543,
+    "path" : "C:/Users/sskai/Desktop/validation_check/Data_make.R",
+    "project_path" : "Data_make.R",
+    "properties" : {
+        "cursorPosition" : "25,7",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

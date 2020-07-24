@@ -1,0 +1,9 @@
+"0","library(knitr)"
+"2","Warning message:
+"
+"2","Unknown or uninitialised column: 'numer'. 
+"
+"0","library(rmarkdown)"
+"0","options(max.print=""90"")"
+"0","opts_chunk$set(fig.height=5, "
+"0","               fig.width=10)"

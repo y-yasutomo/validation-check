@@ -1,0 +1,10 @@
+"0","Data<-read_csv(""space_trim.csv"")
+"
+"2","Parsed with column specification:
+cols(
+  positions_of_space = [31mcol_character()[39m,
+  ”¼ŠpƒXƒy[ƒX = [31mcol_character()[39m,
+  ‘SŠpƒXƒy[ƒX = [31mcol_character()[39m
+)
+"
+"0","Data"

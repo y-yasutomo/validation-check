@@ -1,0 +1,6 @@
+"0"," min_val<-function(x)min(x,na.rm = T)"
+"0"," max_val<-function(x)max(x,na.rm = T)"
+"0"," max_len<-function(x)max(nchar(x),na.rm = T)"
+"0"," min_len<-function(x)min(nchar(x),na.rm = T)"
+"0"," num_unique<-function(x)function(x)length(unique(x))"
+"0"," num_na<-function(x)sum(is.na(x))"

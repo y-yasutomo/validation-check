@@ -1,0 +1,208 @@
+---
+title: "validation check using R"
+output:
+  html_document:
+    code_folding: hide
+    df_print: paged
+    fig_caption: yes
+    highlight: tango
+    number_sections: yes
+    theme: paper
+    toc: yes
+    toc_float: no
+  word_document:
+    toc: yes
+---
+
+```{r setup}
+library(knitr)
+library(rmarkdown)
+options(max.print="90")
+opts_chunk$set(fig.height=5, 
+               fig.width=10)
+```
+
+# はじめに
+業務でデータのバリデーションチェックを行いました。本番では別のソフトを使いましたが，Rでも実行できるし，使いようによってはもっと簡単に実行できるのでは？と思いRでバリデーションチェックを行ってみたので方法を記事にしました．
+
+# バリデーションチェックとは
+データマネジメントの現場では，しばしばデータの「品質チェック」（バリデーションチェック）が行われます．
+大量のデータをすべて目で見ていくのでは，間違いも起こりますし，効率もよくありません．
+そこで，今あるデータの「品質」を簡単に評価するために，データの範囲や極端な値をチェックし異常を浮き彫りにするという操作です．
+
+# Rでバリデーションチェックを行う
+Rには，統計解析に用いる関数群はもちろんですが，データ操作のための関数やパッケージも充実しています．ファイルの出力も容易なので，再現性のある結果を共有することもできます． 
+
+# 実行環境
+今回の実行環境です．
+
+```{r} 
+ R.Version()$version.string
+```
+
+# データを読み込みのに以下のパッケージを使います
+
+```{r} 
+ library(readr)  #csvファイルの読み込み
+ library(readxl) #xlsxファイルの読み込み
+ library(tidyverse)
+```
+
+データを読み込む前に，R上での欠損値と空白（スペース）の扱いを抑えておきます．
+バリデーションチェックやデータクレンジングにおいては
+どのような処理を行ったか記録を残しておくことは重要です．
+
+そのため，これらがどのように処理されるのか確認しておきます．
+
+## スペースの扱い
+
+次のようなデータを用意します．
+```{r echo=F}
+Data<-read_csv("space_trim.csv",trim_ws = F)
+Data
+```
+
+各行は文字前後の空白の位置を表しています．
+それぞれ文字の前，後ろ，前後，文字中に
+半角と全角のスペースが挿入されています．
+
+### csv
+このデータがcsv形式で保存されている場合
+readrパッケージのread_csv関数で読み込みます．
+
+```{r}
+Data<-read_csv("space_trim.csv")
+Data
+```
+
+ここでデータを見てみると，文字前後の半角スペースが
+削除されていることがわかります．
+
+実は`read_csv`関数は，trim_ws引数でデータ前後の空白を
+データ読み込み時に削除するか選択することができます．
+
+このオプションはデフォルトではTRUEになっているため
+普段意識する必要がありませんが，
+データクレンジングを行う際は，暗黙のうちにクレンジング処理が
+行われていることを認識しておく必要があります．
+
+また，trim_ws=FALSEとして読み込めば
+データを「そのまま」の状態で読み込みことができます．
+
+```{r}
+Data<-read_csv("space_trim.csv",trim_ws = F)
+Data
+```
+
+### xlsx
+
+xlsxの場合も使用する関数は異なりますが処理は同様です．
+
+```{r}
+Data<-read_xlsx("space_trim.xlsx")
+Data
+```
+
+```{r}
+Data<-read_xlsx("space_trim.xlsx",trim_ws = F)
+Data
+```
+
+## 欠損値の扱い
+
+Rではデータが欠損している場合，NA(Not Available)として読み込まれます．
+
+以下のようなデータを用意します．
+半角スペースは欠損値の扱いがされ
+全角スペースはそのまま文字列として扱われます．
+
+```{r}
+Data<-read_csv("sample3_csv.csv")
+Data
+```
+
+```{r}
+Data<-read_xlsx("sample3_excel.xlsx")
+Data
+```
+
+'read_csv'，'read_xlsx'でも同様の処理がなされます．
+
+これらのことからデータの読み込み時には
+- 全角スペースは文字と同様の扱いがなされる
+- 半角スペースのみは欠損，文字前後の半角スペースは自動でトリミングの対象となる
+と認識しておけば問題なさそうです．
+
+# バリデーションチェック
+
+実際にバリデーションチェックを行います．
+バリデーションチェックでは次のような項目をチェックします．
+
+- データ型
+- データの長さ
+- ユニーク数
+- 欠損値の数
+- 空白スペースの有無
+
+もし，対象データにデータ定義書があればそれに基づいて
+値の逸脱がないかチェックを行います．
+
+今回は次のようなデータがあるとします．
+
+## Reading data
+```{r} 
+ Df<-read_csv("sample_data.csv",locale = default_locale())
+ Df<-Df[,-1]
+ args(read_csv)
+ summary(Df)
+ Df %>% count()
+```
+
+
+## function definition
+
+バリデーションチェック用に関数を定義します．
+それぞれデータの最小/最大，最長/最短の値を取り出します．
+
+```{r}
+ min_val<-function(x)min(x,na.rm = T)
+ max_val<-function(x)max(x,na.rm = T)
+ max_len<-function(x)max(nchar(x),na.rm = T)
+ min_len<-function(x)min(nchar(x),na.rm = T)
+ num_unique<-function(x)function(x)length(unique(x))
+ num_na<-function(x)sum(is.na(x))
+```
+
+## validation check
+```{r}
+
+ validation_check<-function(Df){
+    
+ res_validation<-
+   data.frame(matrix(NA,ncol(Df),6,
+                     dimnames = list(c(),
+                                     c("val_min","val_max","len_min","len_max",
+                                       "unique_num","na_num"))))
+
+ res_validation$val_min<-apply(Df,2,min_val)
+ res_validation$val_max<-apply(Df,2,max_val)
+ res_validation$len_min<-apply(Df,2,min_len)
+ res_validation$len_max<-apply(Df,2,max_len)
+ res_validation$unique_num<-apply(Df,2,num_unique)
+ res_validation$na_num<-apply(Df,2,num_na)
+ res_validation
+ }
+#validation_check(Df)
+```
+
+
+## encode
+```{r}
+Df<-read_csv("sample_data.csv",locale = locale(encoding = "CP932"))
+Df[25,]
+```
+
+```{r}
+validation_check(Df)
+```
+ 

@@ -1,0 +1,47 @@
+"0"," Df<-read_csv(""sample_data.csv"",locale = default_locale())"
+"2","Missing column names filled in: 'X1' [1]"
+"2","Parsed with column specification:
+cols(
+  X1 = [32mcol_double()[39m,
+  ID = [31mcol_character()[39m,
+  CATALOG_ID = [31mcol_character()[39m,
+  NUMBER = [31mcol_character()[39m
+)
+"
+"0"," Df<-Df[,-1]"
+"0"," args(read_csv)"
+"1","function (file, col_names = TRUE, col_types = NULL, locale = default_locale(), 
+"
+"1","    na = c("""", ""NA""), quoted_na = TRUE, quote = ""\"""", 
+"
+"1","    comment = """", trim_ws = TRUE, skip = 0, n_max = Inf, 
+"
+"1","    guess_max = min(1000, n_max), progress = show_progress(), 
+"
+"1","    skip_empty_rows = TRUE) 
+"
+"1","NULL
+"
+"0"," summary(Df)"
+"1",""
+"1","      ID           "
+"1","  CATALOG_ID       "
+"1","    NUMBER         "
+"1","
+"
+"1"," Length:100        "
+"1"," Length:100        "
+"1"," Length:100        "
+"1","
+"
+"1"," Class :character  "
+"1"," Class :character  "
+"1"," Class :character  "
+"1","
+"
+"1"," Mode  :character  "
+"1"," Mode  :character  "
+"1"," Mode  :character  "
+"1","
+"
+"0"," Df %>% count()"
